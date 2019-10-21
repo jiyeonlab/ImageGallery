@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDropDelegate {
+class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout {
     
     var images = [Image]()
     
@@ -35,6 +35,18 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
         return cell
     }
     
+    // MARK: UICollectionViewDelegateFlowLayout
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let imageWidth: CGFloat = collectionView.bounds.size.width / 3.4
+        
+        print("width : \(imageWidth)")
+        
+        let imageHeight = imageWidth / images[indexPath.item].aspectRatio
+        
+        return CGSize(width: imageWidth, height: imageHeight)
+    }
+    
     // MARK: UICollectionViewDropDelegate
     func collectionView(_ collectionView: UICollectionView, canHandle session: UIDropSession) -> Bool {
         return session.canLoadObjects(ofClass: NSURL.self) && session.canLoadObjects(ofClass: UIImage.self)
@@ -51,10 +63,13 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             
             var newImage = Image()
             
+            // TASK 3번
             item.dragItem.itemProvider.loadObject(ofClass: UIImage.self) { (provider, error) in
                 DispatchQueue.main.async {
                     if let image = provider as? UIImage {
                         print("Yes image")
+                        newImage.aspectRatio = image.size.width / image.size.height
+                        print("aspectRatio : \(image.size.width / image.size.height)")
                     }else {
                         placeholderCell.deletePlaceholder()
                     }
@@ -66,6 +81,8 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
                     if let url = provider as? URL {
                         print("Yes url")
                         newImage.url = url
+                        
+                        // TASK 8번
                         placeholderCell.commitInsertion { (insertionIndex) in
                             self.images.insert(newImage, at: destinationIndexPath.item)
                         }
