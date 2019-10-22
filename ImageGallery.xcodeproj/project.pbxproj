@@ -16,6 +16,8 @@
 		9070EBEE235D7995006678F3 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9070EBED235D7995006678F3 /* ImageCollectionViewCell.swift */; };
 		9070EBF0235D7AD9006678F3 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9070EBEF235D7AD9006678F3 /* Image.swift */; };
 		9070EBF2235D86D0006678F3 /* Fail_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9070EBF1235D86D0006678F3 /* Fail_Icon.png */; };
+		9070EBF4235DEB13006678F3 /* ImageGalleryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9070EBF3235DEB13006678F3 /* ImageGalleryTableViewController.swift */; };
+		9070EBF6235E0695006678F3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9070EBF5235E0695006678F3 /* Utilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		9070EBED235D7995006678F3 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		9070EBEF235D7AD9006678F3 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		9070EBF1235D86D0006678F3 /* Fail_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Fail_Icon.png; sourceTree = "<group>"; };
+		9070EBF3235DEB13006678F3 /* ImageGalleryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewController.swift; sourceTree = "<group>"; };
+		9070EBF5235E0695006678F3 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +68,8 @@
 			children = (
 				9070EBEA235D72B5006678F3 /* Supporting Files */,
 				9070EBDC235D72AB006678F3 /* Main.storyboard */,
+				9070EBF3235DEB13006678F3 /* ImageGalleryTableViewController.swift */,
+				9070EBF5235E0695006678F3 /* Utilities.swift */,
 				9070EBEB235D72DD006678F3 /* ImageGalleryViewController.swift */,
 				9070EBED235D7995006678F3 /* ImageCollectionViewCell.swift */,
 				9070EBEF235D7AD9006678F3 /* Image.swift */,
@@ -158,6 +164,8 @@
 			files = (
 				9070EBD7235D72AB006678F3 /* AppDelegate.swift in Sources */,
 				9070EBD9235D72AB006678F3 /* SceneDelegate.swift in Sources */,
+				9070EBF6235E0695006678F3 /* Utilities.swift in Sources */,
+				9070EBF4235DEB13006678F3 /* ImageGalleryTableViewController.swift in Sources */,
 				9070EBEE235D7995006678F3 /* ImageCollectionViewCell.swift in Sources */,
 				9070EBEC235D72DD006678F3 /* ImageGalleryViewController.swift in Sources */,
 				9070EBF0235D7AD9006678F3 /* Image.swift in Sources */,
