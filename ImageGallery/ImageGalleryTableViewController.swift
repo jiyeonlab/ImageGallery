@@ -19,7 +19,7 @@ class ImageGalleryTableViewController: UITableViewController{
         return newDocument
     }()
     
-    var deleteGalleryDocument = [String]()
+    var deleteGalleryDocument = [ImageGallery]()
     
     let sections = ["", "Recently Deleted"]
     
@@ -43,7 +43,6 @@ class ImageGalleryTableViewController: UITableViewController{
         return sections[section]
     }
     
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "DocumentCell", for: indexPath)
@@ -53,7 +52,7 @@ class ImageGalleryTableViewController: UITableViewController{
             //cell.textLabel?.text = imageGalleryDocument[indexPath.row]
             cell.textLabel?.text = imageGalleryDocument[indexPath.row].galleryName
         } else {
-            cell.textLabel?.text = deleteGalleryDocument[indexPath.row]
+            cell.textLabel?.text = deleteGalleryDocument[indexPath.row].galleryName
         }
         return cell
     }
@@ -87,29 +86,31 @@ class ImageGalleryTableViewController: UITableViewController{
     
     
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            
-            if indexPath.section == 0 {
-                let deleteTitle = imageGalleryDocument[indexPath.row].galleryName
-                
-                imageGalleryDocument.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
-                deleteGalleryDocument += [deleteTitle]
-                tableView.reloadData()
-            }else {
-                deleteGalleryDocument.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
-            }
-            
-            
-            
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-            
-        }
-    }
+//    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            // Delete the row from the data source
+//
+//            if indexPath.section == 0 {
+//                print("0")
+//                let deleteTitle = imageGalleryDocument[indexPath.row].galleryName
+//
+//                imageGalleryDocument.remove(at: indexPath.row)
+//                tableView.deleteRows(at: [indexPath], with: .fade)
+//                deleteGalleryDocument += [deleteTitle]
+//                tableView.reloadData()
+//            }else {
+//                print("1")
+//                deleteGalleryDocument.remove(at: indexPath.row)
+//                tableView.deleteRows(at: [indexPath], with: .fade)
+//            }
+//
+//
+//
+//        } else if editingStyle == .insert {
+//            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//
+//        }
+//    }
     
     
     /*
@@ -149,5 +150,61 @@ class ImageGalleryTableViewController: UITableViewController{
            
             
         }
+    }
+    
+    // tableCell의 왼쪽에 삭제가 뜨도록.
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if indexPath.section == 0 {
+            let deleteToRecentlyDelete = UIContextualAction(style: .destructive, title: "삭제") { (_, _, success) in
+                let deleteGallery = self.imageGalleryDocument[indexPath.row]
+                
+                self.imageGalleryDocument.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                //self.deleteGalleryDocument += [deleteTitle]
+                
+                self.deleteGalleryDocument.append(deleteGallery)
+                //tableView.reloadData()
+                tableView.beginUpdates()
+                let animateIndex = IndexPath(row: (self.deleteGalleryDocument.count - 1), section: 1)
+                tableView.insertRows(at: [animateIndex], with: .fade)
+                tableView.endUpdates()
+            }
+            return UISwipeActionsConfiguration(actions: [deleteToRecentlyDelete])
+        }else {
+            // Recently Delete에서 영구 삭제하기.
+            let deletePermanently = UIContextualAction(style: .destructive, title: "삭제") { (_, _, success) in
+                
+                //success(true)
+                self.deleteGalleryDocument.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                tableView.reloadData()
+            }
+
+            return UISwipeActionsConfiguration(actions: [deletePermanently])
+        }
+    }
+    
+    //section 1 에서 다시 section 0으로 복구하고 싶을 때.
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if indexPath.section == 1 {
+            let undelete = UIContextualAction(style: .normal, title: "복구") { (_, _, success) in
+                let recoverGallery = self.deleteGalleryDocument[indexPath.row]
+                
+                self.deleteGalleryDocument.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                
+                self.imageGalleryDocument.append(recoverGallery)
+                //tableView.reloadData()
+                tableView.beginUpdates()
+                let animateIndex = IndexPath(row: (self.imageGalleryDocument.count - 1), section: 0)
+                tableView.insertRows(at: [animateIndex], with: .fade)
+                tableView.endUpdates()
+                
+            }
+            return UISwipeActionsConfiguration(actions: [undelete])
+        }else {
+            return UISwipeActionsConfiguration()
+        }
+        
     }
 }
