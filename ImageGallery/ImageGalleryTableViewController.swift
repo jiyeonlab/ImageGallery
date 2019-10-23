@@ -8,12 +8,21 @@
 
 import UIKit
 
-class ImageGalleryTableViewController: UITableViewController {
+class ImageGalleryTableViewController: UITableViewController{
     
-    var imageGalleryDocument = ["MyFirstGallery"]
+    var imageGalleryDocument : [ImageGallery] = {
+        var newDocument = [ImageGallery]()
+        var document1 = ImageGallery()
+        document1.galleryName = "Document1"
+        newDocument.append(document1)
+        
+        return newDocument
+    }()
+    
     var deleteGalleryDocument = [String]()
     
     let sections = ["", "Recently Deleted"]
+    
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -41,7 +50,8 @@ class ImageGalleryTableViewController: UITableViewController {
         
         // Configure the cell...
         if indexPath.section == 0 {
-            cell.textLabel?.text = imageGalleryDocument[indexPath.row]
+            //cell.textLabel?.text = imageGalleryDocument[indexPath.row]
+            cell.textLabel?.text = imageGalleryDocument[indexPath.row].galleryName
         } else {
             cell.textLabel?.text = deleteGalleryDocument[indexPath.row]
         }
@@ -49,7 +59,13 @@ class ImageGalleryTableViewController: UITableViewController {
     }
     
     @IBAction func newImageGallery(_ sender: UIBarButtonItem) {
-        imageGalleryDocument += ["Untitled".madeUnique(withRespectTo: imageGalleryDocument)]
+        let newGallery = ImageGallery()
+        newGallery.galleryName = "Untitled"
+        imageGalleryDocument.append(newGallery)
+        
+        print("newImageGallery 누른 후 Document count = \(imageGalleryDocument.count)")
+        
+        //imageGalleryDocument += ["Untitled".madeUnique(withRespectTo: imageGalleryDocument)]
         tableView.reloadData()
     }
     override func viewWillLayoutSubviews() {
@@ -76,7 +92,7 @@ class ImageGalleryTableViewController: UITableViewController {
             // Delete the row from the data source
             
             if indexPath.section == 0 {
-                let deleteTitle = imageGalleryDocument[indexPath.row]
+                let deleteTitle = imageGalleryDocument[indexPath.row].galleryName
                 
                 imageGalleryDocument.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
@@ -114,14 +130,24 @@ class ImageGalleryTableViewController: UITableViewController {
     
     // MARK: - Navigation
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("눌린 row index = \(indexPath.row)")
+        
+    }
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let galleryView = segue.destination.contents as? ImageGalleryViewController {
-            galleryView.navigationItem.title = (sender as? UITableViewCell)?.textLabel?.text
-            //galleryView.
-            print("model count ? = \(galleryView.images.count)")
+            if let selectGalleryName = (sender as? UITableViewCell)?.textLabel?.text {
+                galleryView.navigationItem.title = selectGalleryName
+                
+                // 여기서 imageGalleryDocument 내에 selectGalleryName을 가진 인스턴스를 찾아서, collection view에게 줘야함.
+                if let selectNumber = imageGalleryDocument.firstIndex(where: {$0.galleryName == selectGalleryName}) {
+                    galleryView.imageGallery = imageGalleryDocument[selectNumber]
+                }
+            }
+           
+            
         }
     }
-    
-    
 }

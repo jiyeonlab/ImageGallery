@@ -8,9 +8,9 @@
 
 import UIKit
 
-class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate {
+class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate{
     
-    var images = [Image]()
+    var imageGallery: ImageGallery = ImageGallery()
     
     @IBOutlet weak var imageCollectionView: UICollectionView! {
         didSet {
@@ -20,17 +20,20 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             imageCollectionView.dragDelegate = self
         }
     }
-    
+    override func viewDidLoad() {
+        print("viewdidload")
+    }
     // MARK: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
+        return imageGallery.images.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath)
         
         if let imageCell = cell as? ImageCollectionViewCell {
-            imageCell.imageURL = images[indexPath.item].url
+//            imageCell.imageURL = images[indexPath.item].url
+            imageCell.imageURL = imageGallery.images[indexPath.item].url
         }
         
         return cell
@@ -49,7 +52,6 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
     
     // MARK: UICollectionViewDragDelegate
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        print("drag delegate")
         
         session.localContext = collectionView
         
@@ -73,7 +75,6 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
         let isSelf = ((session.localDragSession?.localContext) as? UICollectionView) == collectionView
         
         if isSelf {
-            print("url.self canload")
             return session.canLoadObjects(ofClass: URL.self)
         }else {
             return session.canLoadObjects(ofClass: NSURL.self) && session.canLoadObjects(ofClass: UIImage.self)
@@ -88,7 +89,8 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
-        let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: images.count, section: 0)
+//        let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: images.count, section: 0)
+        let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: imageGallery.images.count, section: 0)
         
         for item in coordinator.items {
             
@@ -99,10 +101,15 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
                     
                     collectionView.performBatchUpdates({
                         // 모델 먼저 업데이트.
-                        var newImage = Image()
+//                        var newImage = Image()
+//                        newImage.url = dragItemURL
+//                        images.remove(at: sourceIndexPath.item)
+//                        images.insert(newImage, at: destinationIndexPath.item)
+                        // 모델 먼저 업데이트
+                        var newImage = ImageGallery.Image() //  aspectRatio, url을 변수로 가지는 Image 구조체 하나를 선언하는 것임.
                         newImage.url = dragItemURL
-                        images.remove(at: sourceIndexPath.item)
-                        images.insert(newImage, at: destinationIndexPath.item)
+                        imageGallery.images.remove(at: sourceIndexPath.item)
+                        imageGallery.images.insert(newImage, at: destinationIndexPath.item)
                         
                         // collectionView를 업데이트
                         collectionView.deleteItems(at: [sourceIndexPath])
@@ -119,7 +126,8 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             {
                 let placeholderCell = coordinator.drop(item.dragItem, to: UICollectionViewDropPlaceholder(insertionIndexPath: destinationIndexPath, reuseIdentifier: "DropPlaceholderCell"))
                 
-                var newImage = Image()
+                //var newImage = Image()
+                var newImage = ImageGallery.Image()
                 
                 // TASK 3번
                 item.dragItem.itemProvider.loadObject(ofClass: UIImage.self) { (provider, error) in
@@ -136,11 +144,13 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
                 item.dragItem.itemProvider.loadObject(ofClass: NSURL.self) { (provider, error) in
                     DispatchQueue.main.async {
                         if let url = provider as? URL {
+                            //newImage.url = url
                             newImage.url = url
                             
                             // TASK 8번
                             placeholderCell.commitInsertion { (insertionIndex) in
-                                self.images.insert(newImage, at: destinationIndexPath.item)
+                                //self.images.insert(newImage, at: destinationIndexPath.item)
+                                self.imageGallery.images.insert(newImage, at: destinationIndexPath.item)
                             }
                         }else{
                             placeholderCell.deletePlaceholder()
