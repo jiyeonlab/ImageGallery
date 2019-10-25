@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		906B84EB2362D36A001DB6A7 /* ImageGalleryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906B84EA2362D36A001DB6A7 /* ImageGalleryTableViewCell.swift */; };
 		9070EBD7235D72AB006678F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9070EBD6235D72AB006678F3 /* AppDelegate.swift */; };
 		9070EBD9235D72AB006678F3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9070EBD8235D72AB006678F3 /* SceneDelegate.swift */; };
 		9070EBDE235D72AB006678F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9070EBDC235D72AB006678F3 /* Main.storyboard */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		906B84EA2362D36A001DB6A7 /* ImageGalleryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewCell.swift; sourceTree = "<group>"; };
 		9070EBD3235D72AB006678F3 /* ImageGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9070EBD6235D72AB006678F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9070EBD8235D72AB006678F3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				9070EBEA235D72B5006678F3 /* Supporting Files */,
 				9070EBDC235D72AB006678F3 /* Main.storyboard */,
 				9070EBF3235DEB13006678F3 /* ImageGalleryTableViewController.swift */,
+				906B84EA2362D36A001DB6A7 /* ImageGalleryTableViewCell.swift */,
 				9070EBF5235E0695006678F3 /* Utilities.swift */,
 				9070EBEB235D72DD006678F3 /* ImageGalleryViewController.swift */,
 				9070EBED235D7995006678F3 /* ImageCollectionViewCell.swift */,
@@ -162,6 +165,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				906B84EB2362D36A001DB6A7 /* ImageGalleryTableViewCell.swift in Sources */,
 				9070EBD7235D72AB006678F3 /* AppDelegate.swift in Sources */,
 				9070EBD9235D72AB006678F3 /* SceneDelegate.swift in Sources */,
 				9070EBF6235E0695006678F3 /* Utilities.swift in Sources */,

@@ -21,7 +21,7 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
         }
     }
     override func viewDidLoad() {
-        print("viewdidload")
+        //print("viewdidload")
     }
     // MARK: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

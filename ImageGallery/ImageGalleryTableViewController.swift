@@ -10,10 +10,12 @@ import UIKit
 
 class ImageGalleryTableViewController: UITableViewController{
     
+    static var ss = ImageGalleryTableViewController()
+    
     var imageGalleryDocument : [ImageGallery] = {
         var newDocument = [ImageGallery]()
         var document1 = ImageGallery()
-        document1.galleryName = "Document1"
+        document1.galleryName = "Untitled1"
         newDocument.append(document1)
         
         return newDocument
@@ -23,7 +25,7 @@ class ImageGalleryTableViewController: UITableViewController{
     
     var sections = ["", ""]
     
-    var uniqueNameNumber = 1
+    var uniqueNameNumber = 2
     
     // MARK: - Table view data source
     
@@ -47,16 +49,40 @@ class ImageGalleryTableViewController: UITableViewController{
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DocumentCell", for: indexPath)
+        let documentCell = tableView.dequeueReusableCell(withIdentifier: "DocumentCell", for: indexPath) as! ImageGalleryTableViewCell
+        let deletedCell = tableView.dequeueReusableCell(withIdentifier: "DeletedCell", for: indexPath)
         
-        // Configure the cell...
         if indexPath.section == 0 {
-            //cell.textLabel?.text = imageGalleryDocument[indexPath.row]
-            cell.textLabel?.text = imageGalleryDocument[indexPath.row].galleryName
+            documentCell.textField.text = imageGalleryDocument[indexPath.row].galleryName
+            documentCell.tapSetting()
+            return documentCell
         } else {
-            cell.textLabel?.text = deleteGalleryDocument[indexPath.row].galleryName
+            deletedCell.textLabel?.text = deleteGalleryDocument[indexPath.row].galleryName
+            return deletedCell
         }
-        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let selectRow = tableView.cellForRow(at: indexPath)
+        
+        if let selectCell = selectRow as? ImageGalleryTableViewCell {
+            print("did Select Row \(indexPath.row)")
+            //selectCell.textField.becomeFirstResponder()
+            selectCell.textField.isUserInteractionEnabled = true
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+        let deSelectRow = tableView.cellForRow(at: indexPath)
+        
+        if let deSelectCell = deSelectRow as? ImageGalleryTableViewCell {
+            print("de Select Row \(indexPath.row)")
+            deSelectCell.textField.resignFirstResponder()
+            deSelectCell.textField.isUserInteractionEnabled = false
+        }
+        
+        return indexPath
     }
     
     @IBAction func newImageGallery(_ sender: UIBarButtonItem) {
@@ -75,6 +101,7 @@ class ImageGalleryTableViewController: UITableViewController{
         tableView.insertRows(at: [animateIndex], with: .fade)
         tableView.endUpdates()
     }
+    
     override func viewWillLayoutSubviews() {
         //print("layout subview")
         super.viewWillLayoutSubviews()
@@ -92,35 +119,6 @@ class ImageGalleryTableViewController: UITableViewController{
      return true
      }
      */
-    
-    
-    // Override to support editing the table view.
-    //    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    //        if editingStyle == .delete {
-    //            // Delete the row from the data source
-    //
-    //            if indexPath.section == 0 {
-    //                print("0")
-    //                let deleteTitle = imageGalleryDocument[indexPath.row].galleryName
-    //
-    //                imageGalleryDocument.remove(at: indexPath.row)
-    //                tableView.deleteRows(at: [indexPath], with: .fade)
-    //                deleteGalleryDocument += [deleteTitle]
-    //                tableView.reloadData()
-    //            }else {
-    //                print("1")
-    //                deleteGalleryDocument.remove(at: indexPath.row)
-    //                tableView.deleteRows(at: [indexPath], with: .fade)
-    //            }
-    //
-    //
-    //
-    //        } else if editingStyle == .insert {
-    //            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    //
-    //        }
-    //    }
-    
     
     /*
      // Override to support rearranging the table view.
@@ -145,7 +143,8 @@ class ImageGalleryTableViewController: UITableViewController{
         
         if let galleryView = segue.destination.contents as? ImageGalleryViewController {
             // 사용자가 section 0에서 보고자하는 gallery를 선택했을 때.
-            if let selectGalleryName = (sender as? UITableViewCell)?.textLabel?.text {
+            //if let selectGalleryName = (sender as? UITableViewCell)?.textLabel?.text {
+            if let selectGalleryName = (sender as? ImageGalleryTableViewCell)?.textField.text {
                 galleryView.navigationItem.title = selectGalleryName
                 
                 // 여기서 imageGalleryDocument 내에 selectGalleryName을 가진 인스턴스를 찾아서, collection view에게 줘야함.
@@ -166,20 +165,20 @@ class ImageGalleryTableViewController: UITableViewController{
     // section 1에 있는 cell들은 segue 하는 것을 막기 위해 추가.
     // 이 함수가 prepare(for segue, sender)보다 먼저 호출된다.
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        
-        if identifier == "SelectDocument" {
-            if let selectCell = (sender as? UITableViewCell) {
-                if let selectSection = self.tableView.indexPath(for: selectCell)?.section, selectSection == 1 {
-                    return false
-                }else {
-                    return true
-                }
-            }
+
+        // ImageGalleryTableViewCell에 있는 핸들러로, textfield 수정 후 엔터치면 여기가 수행됨.
+        (sender as? ImageGalleryTableViewCell)?.resignationHandler = {
+            self.performSegue(withIdentifier: "SelectDocument", sender: sender)
         }
         
+        // 일반적으로 사용자가 table cell을 직접 눌렀을 때, 실햄됨.
+        if identifier == "SelectDocument"{
+            return true
+        }
         return false
-        
+
     }
+    
     // tableCell의 왼쪽에 삭제가 뜨도록.
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         if indexPath.section == 0 {
