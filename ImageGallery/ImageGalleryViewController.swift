@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate{
+class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate, UIDropInteractionDelegate {
     
     var imageGallery: ImageGallery = ImageGallery()
     
@@ -37,6 +37,35 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
         
     }
     
+    // Add trash button
+    @IBOutlet weak var trashButton: UIBarButtonItem! {
+        didSet {
+            navigationController?.navigationBar.addInteraction(UIDropInteraction(delegate: self))
+        }
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        print("yes delete!")
+        return session.canLoadObjects(ofClass: NSURL.self)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        print("here")
+        return UIDropProposal(operation: .move)
+    }
+    
+    var currentDragImageIndex: [IndexPath] = []
+    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        // image를 collection view 목록에서 삭제하고, view 전체를 업데이트 해줘야 함.
+        print("perfromdrop")
+        if let currentIndex = currentDragImageIndex.first?.item {
+            print("currentIndex = \(currentIndex)")
+            imageGallery.images.remove(at: currentIndex)
+            imageCollectionView.deleteItems(at: currentDragImageIndex)
+        }
+        currentDragImageIndex.removeAll()
+        
+    }
     // MARK: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageGallery.images.count
@@ -68,6 +97,7 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
     // MARK: UICollectionViewDragDelegate
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         
+        //print("drag image")
         session.localContext = collectionView
         
         return dragItem(at: indexPath)
@@ -78,6 +108,7 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             let dragItem = UIDragItem(itemProvider: NSItemProvider(object: selectItem as NSItemProviderWriting))
             
             dragItem.localObject = selectItem
+            currentDragImageIndex += [indexPath]
             
             return [dragItem]
         }else{

@@ -133,9 +133,16 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="9PM-6W-Jbq"/>
+                    <navigationItem key="navigationItem" id="9PM-6W-Jbq">
+                        <barButtonItem key="rightBarButtonItem" springLoaded="YES" systemItem="trash" id="YNg-Pc-AEp">
+                            <connections>
+                                <action selector="trashButton:" destination="BYZ-38-t0r" id="zgH-sR-Z1E"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="imageCollectionView" destination="uf4-Ed-CLC" id="rn4-lN-hCv"/>
+                        <outlet property="trashButton" destination="YNg-Pc-AEp" id="21t-xp-dt7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
