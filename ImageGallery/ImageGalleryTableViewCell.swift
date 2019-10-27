@@ -21,13 +21,26 @@ class ImageGalleryTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     func tapSetting() {
         
+        print("tapSetting")
+        
+//        let singleTap = UITapGestureRecognizer(target: self, action: #selector(singleTaped(_:)))
+//        singleTap.numberOfTouchesRequired = 1
+//        textField.addGestureRecognizer(singleTap)
+        
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTaped(_:)))
         doubleTap.numberOfTapsRequired = 2
         textField.addGestureRecognizer(doubleTap)
         
     }
     
-    var resignationHandler: (() -> Void)?
+    var testHandler: (() -> Void)?
+    var resignationHandler: ((_ newName: String) -> Void)?
+    
+    @objc func singleTaped(_ sender: UITapGestureRecognizer) {
+        print("singleTaped()")
+        
+        testHandler?()
+    }
     
     @objc func doubleTaped(_ sender: UITapGestureRecognizer) {
         print("doubleTaped()")
@@ -44,7 +57,7 @@ class ImageGalleryTableViewCell: UITableViewCell, UITextFieldDelegate {
         textField.resignFirstResponder()
         textField.isUserInteractionEnabled = false
         
-        resignationHandler?()
+        resignationHandler?(_: textField.text ?? "")
         
         return true
     }

@@ -20,9 +20,7 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             imageCollectionView.dragDelegate = self
         }
     }
-    override func viewDidLoad() {
-        //print("viewdidload")
-    }
+    
     // MARK: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageGallery.images.count
@@ -42,12 +40,12 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
     // MARK: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-//        let imageWidth: CGFloat = collectionView.bounds.size.width / 3.4
-//
-//        let imageHeight = imageWidth / images[indexPath.item].aspectRatio
-//
-//        return CGSize(width: imageWidth, height: imageHeight)
-        return CGSize(width: 200.0, height: 200.0)
+        let imageWidth: CGFloat = collectionView.bounds.size.width / 3.4
+
+        let imageHeight = imageWidth / imageGallery.images[indexPath.item].aspectRatio
+
+        return CGSize(width: imageWidth, height: imageHeight)
+        //return CGSize(width: 200.0, height: 200.0)
     }
     
     // MARK: UICollectionViewDragDelegate
@@ -133,8 +131,8 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
                 item.dragItem.itemProvider.loadObject(ofClass: UIImage.self) { (provider, error) in
                     DispatchQueue.main.async {
                         if let image = provider as? UIImage {
-                            //newImage.aspectRatio = image.size.width / image.size.height
-                            print("aspectRatio : \(image.size.width / image.size.height)")
+                            newImage.aspectRatio = image.size.width / image.size.height
+                            //print("aspectRatio : \(image.size.width / image.size.height)")
                         }else {
                             placeholderCell.deletePlaceholder()
                         }
@@ -160,6 +158,18 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             }
             
         }
+    }
+    
+    // ImageViewController로 segue 연결
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let clickImage = sender as? ImageCollectionViewCell {
+            if let imageVC = segue.destination.contents as? ImageViewController {
+                //print("이제 url 넣어주자")
+                imageVC.imageURL = clickImage.imageURL
+                imageVC.title = (sender as? ImageGalleryViewController)?.navigationItem.title
+            }
+        }
+        
     }
     
 }
