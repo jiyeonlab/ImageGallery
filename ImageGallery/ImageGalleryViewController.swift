@@ -18,7 +18,23 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
             imageCollectionView.delegate = self
             imageCollectionView.dropDelegate = self
             imageCollectionView.dragDelegate = self
+            
+            imageCollectionView.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(resizeCell(_:))))
         }
+    }
+    
+    
+    var imageWidthConstant: CGFloat = 1.0
+    @objc func resizeCell(_ sender: UIPinchGestureRecognizer) {
+        switch sender.state {
+        case .ended, .changed:
+            imageWidthConstant = sender.scale
+            imageCollectionView.collectionViewLayout.invalidateLayout()
+        default:
+            break
+        }
+        
+        
     }
     
     // MARK: UICollectionViewDataSource
@@ -40,11 +56,12 @@ class ImageGalleryViewController: UIViewController, UICollectionViewDataSource, 
     // MARK: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let imageWidth: CGFloat = collectionView.bounds.size.width / 3.4
+        //let imageWidth: CGFloat = collectionView.bounds.size.width / 3.4
 
-        let imageHeight = imageWidth / imageGallery.images[indexPath.item].aspectRatio
+        let imageHeight = 200 * imageWidthConstant / imageGallery.images[indexPath.item].aspectRatio
 
-        return CGSize(width: imageWidth, height: imageHeight)
+        return CGSize(width: 200 * imageWidthConstant, height: imageHeight)
+        //return CGSize(width: imageWidth, height: imageHeight)
         //return CGSize(width: 200.0, height: 200.0)
     }
     
