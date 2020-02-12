@@ -70,15 +70,15 @@
 		9070EBD5235D72AB006678F3 /* ImageGallery */ = {
 			isa = PBXGroup;
 			children = (
-				906B84EC23631DBD001DB6A7 /* ImageViewController.swift */,
 				9070EBEA235D72B5006678F3 /* Supporting Files */,
 				9070EBDC235D72AB006678F3 /* Main.storyboard */,
 				9070EBF3235DEB13006678F3 /* ImageGalleryTableViewController.swift */,
 				906B84EA2362D36A001DB6A7 /* ImageGalleryTableViewCell.swift */,
-				9070EBF5235E0695006678F3 /* Utilities.swift */,
 				9070EBEB235D72DD006678F3 /* ImageGalleryViewController.swift */,
 				9070EBED235D7995006678F3 /* ImageCollectionViewCell.swift */,
+				906B84EC23631DBD001DB6A7 /* ImageViewController.swift */,
 				9070EBEF235D7AD9006678F3 /* ImageGallery.swift */,
+				9070EBF5235E0695006678F3 /* Utilities.swift */,
 				9070EBE4235D72AC006678F3 /* Info.plist */,
 				9070EBF1235D86D0006678F3 /* Fail_Icon.png */,
 			);

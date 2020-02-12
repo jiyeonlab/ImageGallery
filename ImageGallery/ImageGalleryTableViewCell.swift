@@ -9,8 +9,6 @@
 import UIKit
 
 class ImageGalleryTableViewCell: UITableViewCell, UITextFieldDelegate {
-
-    //weak var parentView = ImageGalleryTableViewController()
     
     @IBOutlet weak var textField: UITextField! {
         didSet {
@@ -19,13 +17,10 @@ class ImageGalleryTableViewCell: UITableViewCell, UITextFieldDelegate {
         }
     }
     
+    var resignationHandler: ((_ newName: String) -> Void)?
+    
+    /// cell에 tap gesture를 add해주는 메소드
     func tapSetting() {
-        
-        print("tapSetting")
-        
-//        let singleTap = UITapGestureRecognizer(target: self, action: #selector(singleTaped(_:)))
-//        singleTap.numberOfTouchesRequired = 1
-//        textField.addGestureRecognizer(singleTap)
         
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTaped(_:)))
         doubleTap.numberOfTapsRequired = 2
@@ -33,17 +28,8 @@ class ImageGalleryTableViewCell: UITableViewCell, UITextFieldDelegate {
         
     }
     
-    var testHandler: (() -> Void)?
-    var resignationHandler: ((_ newName: String) -> Void)?
-    
-    @objc func singleTaped(_ sender: UITapGestureRecognizer) {
-        print("singleTaped()")
-        
-        testHandler?()
-    }
-    
+    /// cell을 더블클릭하면 수행되는 메소드
     @objc func doubleTaped(_ sender: UITapGestureRecognizer) {
-        print("doubleTaped()")
         
         if sender.state == .ended {
             textField.isUserInteractionEnabled = true

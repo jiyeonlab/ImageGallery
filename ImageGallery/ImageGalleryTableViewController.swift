@@ -10,32 +10,47 @@ import UIKit
 
 class ImageGalleryTableViewController: UITableViewController{
     
-//    var imageGalleryDocument : [ImageGallery] = {
-//        var newDocument = [ImageGallery]()
-//        var document1 = ImageGallery()
-//        document1.galleryName = "Untitled1"
-//        newDocument.append(document1)
-//
-//        return newDocument
-//    }()
-    
     var imageGalleryDocument: [ImageGallery] = [ImageGallery]()
     
     var deleteGalleryDocument = [ImageGallery]()
     
+    /// 테이블 뷰의 섹션
     var sections = ["", ""]
     
+    /// "Untitled" 뒤에 붙을 숫자
     var uniqueNameNumber = 1
     
-    // MARK: - Table view data source
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        self.tableView.reloadData()
+        
+        // MARK: 여기서 section 0에 있는 모든 애들의 textField.resignFirstResponder() 해줘야 함.
+        if let sectionZero = tableView.indexPathsForVisibleRows {
+            print("sectionZero = \(sectionZero.count)")
+            
+            for cell in sectionZero {
+                if let cell = tableView.cellForRow(at: cell), let currentCell = cell as? ImageGalleryTableViewCell {
+                    currentCell.textField.resignFirstResponder()
+                    currentCell.textField.isUserInteractionEnabled = false
+                }
+            }
+        }
+    }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Hint 17번 (detail의 위쪽에 < 버튼을 더해서, table view를 스와이프로 없애는 대신 버튼을 눌러 없앨 수도 있음.)
+        navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+    }
+    
+    // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return sections.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         if section == 0 {
             return imageGalleryDocument.count
         } else {
@@ -62,47 +77,20 @@ class ImageGalleryTableViewController: UITableViewController{
         }
     }
     
+    // MARK: - Table View Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let selectRow = tableView.cellForRow(at: indexPath)
         
         if let selectCell = selectRow as? ImageGalleryTableViewCell {
-//            print("did Select ")
             selectCell.textField.isUserInteractionEnabled = true
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
-        super.viewDidAppear(animated)
-        self.tableView.reloadData()
-        
-        // MARK: 여기서 section 0에 있는 모든 애들의 textField.resignFirstResponder() 해줘야 함.
-        if let sectionZero = tableView.indexPathsForVisibleRows {
-            print("sectionZero = \(sectionZero.count)")
-            
-            for cell in sectionZero {
-                if let cell = tableView.cellForRow(at: cell), let currentCell = cell as? ImageGalleryTableViewCell {
-                    currentCell.textField.resignFirstResponder()
-                    currentCell.textField.isUserInteractionEnabled = false
-                }
-            }
-        }
-        
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Hint 17번 (detail의 위쪽에 < 버튼을 더해서, table view를 스와이프로 없애는 대신 버튼을 눌러 없앨 수도 있음.)
-        navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
     }
     
     override func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         let deSelectRow = tableView.cellForRow(at: indexPath)
         
         if let deSelectCell = deSelectRow as? ImageGalleryTableViewCell {
-//            print("de Select ")
             deSelectCell.textField.resignFirstResponder()
             deSelectCell.textField.isUserInteractionEnabled = false
         }
@@ -113,33 +101,21 @@ class ImageGalleryTableViewController: UITableViewController{
     @IBAction func newImageGallery(_ sender: UIBarButtonItem) {
         let newGallery = ImageGallery()
         
-        newGallery.galleryName = "Untitled"+String(uniqueNameNumber)
-        //newGallery.galleryName = "Untitled".madeUnique(withRespectTo: imageGalleryDocument)
+        newGallery.galleryName = "Untitled" + String(uniqueNameNumber)
         imageGalleryDocument.append(newGallery)
         
         uniqueNameNumber += 1
-        //print("newImageGallery 누른 후 Document count = \(imageGalleryDocument.count)")
         
         //tableView.reloadData()
         tableView.beginUpdates()
+        
         let animateIndex = IndexPath(row: (self.imageGalleryDocument.count - 1), section: 0)
         tableView.insertRows(at: [animateIndex], with: .fade)
         tableView.endUpdates()
     }
     
     override func viewWillLayoutSubviews() {
-        //print("layout subview")
         super.viewWillLayoutSubviews()
-        
-        // tableView에서 gallery 목록 하나 눌렀다가, detail view를 눌러서 table view가 사라진 후, 다시 table view 떴을 때,
-        // responder를 리셋하기 위함.
-//        let resetResponder = tableView.visibleCells
-//        for index in resetResponder {
-//            if let resetCellSetting = index as? ImageGalleryTableViewCell {
-//                resetCellSetting.textField.resignFirstResponder()
-//                resetCellSetting.textField.isUserInteractionEnabled = false
-//            }
-//        }
         
         // master에 해당하는 table view가 항상 떠있는게 아니라, 스와이프하면 집어넣고, 다시 꺼내는 것도 가능하게 함.
         if splitViewController?.preferredDisplayMode != .primaryOverlay {
@@ -147,38 +123,12 @@ class ImageGalleryTableViewController: UITableViewController{
         }
     }
     
-    /*
-     // Override to support conditional editing of the table view.
-     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the specified item to be editable.
-     return true
-     }
-     */
-    
-    /*
-     // Override to support rearranging the table view.
-     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-     
-     }
-     */
-    
-    /*
-     // Override to support conditional rearranging of the table view.
-     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
-     }
-     */
-    
-    
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if let galleryView = segue.destination.contents as? ImageGalleryViewController {
             // 사용자가 section 0에서 보고자하는 gallery를 선택했을 때.
-            //if let selectGalleryName = (sender as? UITableViewCell)?.textLabel?.text {
             if let selectGalleryName = (sender as? ImageGalleryTableViewCell)?.textField.text {
                 galleryView.navigationItem.title = selectGalleryName
                 
@@ -198,14 +148,8 @@ class ImageGalleryTableViewController: UITableViewController{
     }
     
     // section 1에 있는 cell들은 segue 하는 것을 막기 위해 추가.
-    // 이 함수가 prepare(for segue, sender)보다 먼저 호출된다.
+    // 이 함수가 prepare(for segue:, sender:)보다 먼저 호출된다.
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-
-//        let cell = sender as? ImageGalleryTableViewCell
-//        cell?.testHandler = {
-//            print("Table View Controller - testHandler")
-//            self.performSegue(withIdentifier: "SelectDocument", sender: sender)
-//        }
         
         // ImageGalleryTableViewCell에 있는 핸들러로, textfield 수정 후 엔터치면 여기가 수행됨.
         (sender as? ImageGalleryTableViewCell)?.resignationHandler = { newName in

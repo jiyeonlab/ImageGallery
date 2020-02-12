@@ -10,6 +10,19 @@ import UIKit
 
 class ImageViewController: UIViewController, UIScrollViewDelegate {
 
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
+    @IBOutlet weak var scrollViewWidth: NSLayoutConstraint!
+    @IBOutlet weak var scrollViewHeight: NSLayoutConstraint!
+    
+    @IBOutlet weak var scrollView: UIScrollView! {
+        didSet {
+            scrollView.minimumZoomScale = 1/25
+            scrollView.maximumZoomScale = 1.0
+            scrollView.delegate = self
+            scrollView.addSubview(imageView)
+        }
+    }
+
     var imageURL: URL? {
         didSet {
             image = nil
@@ -42,12 +55,13 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
+    var imageView = UIImageView()
+    
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         scrollViewWidth.constant = scrollView.contentSize.width
         scrollViewHeight.constant = scrollView.contentSize.height
     }
     
-    // viewDidApper()는 뷰가 나타난 직후.
     // view가 나타났는데도, 이미지가 nil이라면 fetchImage() 해줌.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -56,49 +70,27 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    @IBOutlet weak var spinner: UIActivityIndicatorView!
-    
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
     
-    @IBOutlet weak var scrollViewWidth: NSLayoutConstraint!
-    @IBOutlet weak var scrollViewHeight: NSLayoutConstraint!
-    var imageView = UIImageView()
-    @IBOutlet weak var scrollView: UIScrollView! {
-        didSet {
-            scrollView.minimumZoomScale = 1/25
-            scrollView.maximumZoomScale = 1.0
-            scrollView.delegate = self
-            scrollView.addSubview(imageView)
-        }
-    }
-    
     private func fetchImage() {
-            
-            // 우선 imageURL을 가져온다.
-            if let url = imageURL {
-                spinner.startAnimating()
-                DispatchQueue.global(qos: .userInitiated ).async { [weak self] in
-                    let urlContents = try? Data(contentsOf: url)
-                    
-                    // UI와 관련된 작업은 메인큐에서 실행해야함.
-                    DispatchQueue.main.async {
-                        if let imageData = urlContents, url == self?.imageURL {
-                            //imageView.image = UIImage(data: imageData)
-                            self?.image = UIImage(data: imageData)
-                        }
+        
+        // 우선 imageURL을 가져온다.
+        if let url = imageURL {
+            spinner.startAnimating()
+            DispatchQueue.global(qos: .userInitiated ).async { [weak self] in
+                let urlContents = try? Data(contentsOf: url)
+                
+                // UI와 관련된 작업은 메인큐에서 실행해야함.
+                DispatchQueue.main.async {
+                    if let imageData = urlContents, url == self?.imageURL {
+                        //imageView.image = UIImage(data: imageData)
+                        self?.image = UIImage(data: imageData)
                     }
-                    
                 }
+                
             }
         }
-        
-        // 화면 초기.
-        override func viewDidLoad() {
-            super.viewDidLoad()
-    //        if imageURL == nil {
-    //            imageURL = DemoURLs.stanford
-    //        }
-        }
+    }
 }
